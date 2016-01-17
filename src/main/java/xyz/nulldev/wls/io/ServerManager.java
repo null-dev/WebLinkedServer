@@ -1,5 +1,6 @@
 package xyz.nulldev.wls.io;
 
+import com.google.gson.JsonSyntaxException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -75,6 +76,8 @@ public class ServerManager {
                 }
             } catch(IOException e) {
                 logger.warn("Unable to connect to slave server: " + server, e);
+            } catch(JsonSyntaxException e) {
+                logger.warn("Slave server is returning corrupt/invalid API responses: " + server, e);
             }
         }
         if(listResponse != null)
