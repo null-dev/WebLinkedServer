@@ -32,6 +32,7 @@ Here are all the possible configuration entries and their description:
 ```
 server.role = The role of the server (MASTER or SLAVE). Defaults to: SLAVE
 server.port = The port which the server will bind to. Defaults to: 1919
+server.ip = The IP which the server will bind to. Defaults to: 0.0.0.0
 master.serverListFile = The location of the server list. Defaults to: WLSServers.json in the working directory
 master.listDirectories = Whether or not the master server will list directories (the slaves still will). Defaults to: true
 slave.rootDir = The location of the directory from where the files will be served from. Defaults to the working directory

@@ -19,6 +19,7 @@ import java.io.IOException;
 public class WebLinkedServer {
 
     static int DEFAULT_PORT = 1919;
+    static String DEFAULT_IP = "0.0.0.0";
 
     static File DEFAULT_CONFIGURATION_FILE = new File("WebLinkedServer.config");
     static Configuration CONFIGURATION;
@@ -26,6 +27,7 @@ public class WebLinkedServer {
     static ServerRole SERVER_ROLE;
     static Server SERVER;
     static int PORT;
+    static String IP;
 
     public static void main(String[] args) {
         logger.info("WebLinkedServer is starting...");
@@ -46,6 +48,11 @@ public class WebLinkedServer {
             PORT = DEFAULT_PORT;
         }
         Spark.port(PORT);
+
+        //Get server ip
+        IP = CONFIGURATION.getConfig().getProperty("server.ip",
+                DEFAULT_IP);
+        Spark.ipAddress(IP);
         //Get server role
         try {
             SERVER_ROLE
