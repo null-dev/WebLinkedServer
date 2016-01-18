@@ -81,7 +81,7 @@ public class GetFileRoute implements Route {
         }
         response.status(statusCode);
         response.header("Content-Length", String.valueOf(fileEnd - fileStart + 1));
-        response.header("Content-Range", fileStart + "-" + fileEnd + "/" + length);
+        response.header("Content-Range", "bytes " + fileStart + "-" + fileEnd + "/" + length);
         try (BufferedInputStream stream
                      = new BufferedInputStream(new FileInputStream(resolvedFile));
              ServletOutputStream outputStream
