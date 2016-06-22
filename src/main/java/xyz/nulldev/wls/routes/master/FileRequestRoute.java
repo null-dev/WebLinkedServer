@@ -65,12 +65,18 @@ public class FileRequestRoute implements Route {
             return "<h1>404 Not Found</h1>";
         }
         if(checkResponse.getResponse() != null) {
-            List<ImmutableFile> files =checkResponse.getResponse();
+            List<ImmutableFile> files = checkResponse.getResponse();
             FileListReponseGenerator responseGenerator
                     = new FileListReponseGenerator(dirname, parent, files, sortType, sortDirection);
             return responseGenerator.generate();
         } else if(checkResponse.getTargetURL() != null) {
-            response.redirect(checkResponse.getTargetURL());
+            String queryString;
+            if(request.queryString() == null || request.queryString().isEmpty()) {
+                queryString = "";
+            } else {
+                queryString = "?" + request.queryString();
+            }
+            response.redirect(checkResponse.getTargetURL() + queryString);
             return null;
         } else {
             logger.warn("Unhandled file request! ({})", Arrays.toString(splat));

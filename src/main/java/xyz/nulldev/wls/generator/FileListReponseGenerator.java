@@ -29,10 +29,10 @@ public class FileListReponseGenerator {
     /**
      * Icons and stuff
      */
-    static String IMG_ICN_FILE = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA9QTFRFAAAA5PX6yez1/////////SHUhAAAAAV0Uk5T/////wD7tg5TAAAAQUlEQVR42mJgQQMMIAwFCAEmJkZGRgZmBnQBsAhEAKieEaoJoQKkCLcAxBZGyrQwoWuBiDCg+QXuMAzfogCAAAMAPGcCZJ/5Pw0AAAAASUVORK5CYII=";
-    static String IMG_ICN_DIR = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABJQTFRF//IAAAAA8ucA////ysAA////eQEvdgAAAAZ0Uk5T//////8As7+kvwAAADtJREFUeNpiYEUDDKyMyAAswMLExAAFzIyMDCgKGJmBAkgKGOgrwIQsAHYpTAjkUlS/gAQwfIsGAAIMAN7QAc8Ckh4aAAAAAElFTkSuQmCC";
-    static String IMG_ICN_ASC = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAGklEQVR42mJgZGRkgGAGBhABohigJBAABBgAATAADUnnWMkAAAAASUVORK5CYII=";
-    static String IMG_ICN_DSC = "iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAMAAAB1GNVPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJggAJGKMkIYjCCaDAGCDAAAJAADcpaiWkAAAAASUVORK5CYII=";
+    static String IMG_ICN_FILE = "f";
+    static String IMG_ICN_DIR = "d";
+    static String IMG_ICN_ASC = "a";
+    static String IMG_ICN_DSC = "u";
 
     public FileListReponseGenerator(String dirName, String parentPath, List<ImmutableFile> fileList, SortType sortType, SortDirection sortDirection) {
         this.dirName = dirName;
@@ -86,8 +86,8 @@ public class FileListReponseGenerator {
     }
 
     public enum SortType {
-        NAME("Name", (Comparator<ImmutableFile>) (o1, o2) -> o1.getName().compareTo(o2.getName())),
-        SIZE("Size", (Comparator<ImmutableFile>) (o1, o2) -> {
+        NAME("Name", (o1, o2) -> o1.getName().compareTo(o2.getName())),
+        SIZE("Size", (o1, o2) -> {
             if (o1.getSize() == -1 && o2.getSize() == -1) {
                 return 0;
             } else if (o1.getSize() == -1) {
@@ -98,7 +98,7 @@ public class FileListReponseGenerator {
                 return Long.compare(o1.getSize(), o2.getSize());
             }
         }),
-        DATE("Modified", (Comparator<ImmutableFile>) (o1, o2) -> {
+        DATE("Modified", (o1, o2) -> {
             if (o1.getLastModificationTime() == null && o2.getLastModificationTime() == null) {
                 return 0;
             } else if (o1.getLastModificationTime() == null) {
@@ -174,7 +174,7 @@ public class FileListReponseGenerator {
                         logger.error("Unknown sort type!");
                         throw new RuntimeException("Unknown sort type!");
                     }
-                    extra = " <img src=\"data:image/png;base64," + sortDirection.getIcon() + "\" alt=\"\" />";
+                    extra = " <div class=\"" + sortDirection.getIcon() + "\"></div>";
                 }
                 header.append("\">");
                 header.append(curSortType.getDisplay());
@@ -189,6 +189,7 @@ public class FileListReponseGenerator {
                 tempList = Lists.reverse(tempList);
             }
             int id = 0;
+            long allSize = 0;
             for(ImmutableFile file : tempList) {
                 id++;
                 String cssClass = (id & 1) == 0 ? "even" : "odd";
@@ -199,20 +200,29 @@ public class FileListReponseGenerator {
                 String size = file.isDirectory() ? "-" : Utils.formatSize(file.getSize());
                 String date = DateTimeFormatter.RFC_1123_DATE_TIME
                         .format(ZonedDateTime.ofInstant(file.getLastModificationTime().toInstant(),
-                        TimeZone.getDefault().toZoneId()));
+                                TimeZone.getDefault().toZoneId()));
+                String download = file.isDirectory() ? "" : "<a href=\"" + link + "?force-download=true\">Download</a>";
                 body.append(item.replace("%CLASS%", cssClass)
                         .replace("%ICON%", icon)
                         .replace("%TYPE%", type)
                         .replace("%LINK%", link)
                         .replace("%FILENAME%", name)
                         .replace("%SIZE%", size)
-                        .replace("%DATE%", date));
+                        .replace("%DATE%", date)
+                        .replace("%DOWNLOAD%", download));
+                if(!file.isDirectory())
+                    allSize += file.getSize();
             }
             listing = listing.replace("%HEADINGS%", header.toString())
-                    .replace("%BODY%", body);
+                    .replace("%BODY%", body)
+                    .replace("%TS%", Utils.formatSize(allSize))
+                    .replace("%TF%", String.valueOf(id));
         }
 
         output.append(core);
+        if(!dirName.startsWith("/")) {
+            dirName = "/" + dirName;
+        }
         output = new StringBuilder(output.toString()
                 .replace("%DIRNAME%", dirName)
                 .replace("%PARENTPATH%", parentPath)

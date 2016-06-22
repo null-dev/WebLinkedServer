@@ -12,6 +12,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Project: WebLinkedServer
@@ -82,6 +83,13 @@ public class GetFileRoute implements Route {
         response.status(statusCode);
         response.header("Content-Length", String.valueOf(fileEnd - fileStart + 1));
         response.header("Content-Range", "bytes " + fileStart + "-" + fileEnd + "/" + length);
+        //Allow download forcing
+        if(request.queryParams().contains("force-download")
+                && Objects.equals(request.queryParams("force-download").toUpperCase(), "TRUE")) {
+            response.type("application/force-download");
+            response.header("Content-Transfer-Encoding", "binary");
+            response.header("Content-Disposition","attachment; filename=\"" + resolvedFile.getName() + "\"");
+        }
         try (BufferedInputStream stream
                      = new BufferedInputStream(new FileInputStream(resolvedFile));
              ServletOutputStream outputStream
@@ -90,7 +98,7 @@ public class GetFileRoute implements Route {
             stream.skip(fileStart);
             long remainingBytes = fileEnd - fileStart + 1;
             while(true) {
-                byte data[] = new byte[1024];
+                byte data[] = new byte[8192];
                 int r = stream.read(data, 0, data.length);
                 if(r < 0) break;
                 int toWrite = (int) Math.min(remainingBytes, r);
