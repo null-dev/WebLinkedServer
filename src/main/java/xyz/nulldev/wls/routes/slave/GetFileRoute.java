@@ -23,7 +23,7 @@ public class GetFileRoute implements Route {
 
     Logger logger = LoggerFactory.getLogger(GetFileRoute.class);
 
-    SlaveServerImpl parentServer;
+    private SlaveServerImpl parentServer;
 
     public GetFileRoute(SlaveServerImpl parentServer) {
         this.parentServer = parentServer;
@@ -61,7 +61,7 @@ public class GetFileRoute implements Route {
                 response.status(400);
                 return null;
             }
-            String rangeSplit[] = typeSplit[1].trim().split("\\-");
+            String rangeSplit[] = typeSplit[1].trim().split("-");
             try {
                 fileStart = Long.parseLong(rangeSplit[0]);
                 if(rangeSplit.length >= 2) {
@@ -95,7 +95,12 @@ public class GetFileRoute implements Route {
              ServletOutputStream outputStream
                      = response.raw().getOutputStream()) {
             //Skip some bytes
-            stream.skip(fileStart);
+            long needToSkip = fileStart;
+            while(needToSkip > 0) {
+                long skipped = stream.skip(needToSkip);
+                if(skipped < 0) break; //Can't skip anymore for some reason
+                needToSkip -= skipped;
+            }
             long remainingBytes = fileEnd - fileStart + 1;
             while(true) {
                 byte data[] = new byte[8192];
