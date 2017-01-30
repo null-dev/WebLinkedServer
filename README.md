@@ -46,7 +46,11 @@ It is in JSON format, here is an example:
 {
   "servers": [
     "http://localhost:1918",
-    "http://localhost:1917"
+    "http://localhost:1917",
+    {
+      "internal": "http://127.0.0.1:1916",
+      "external": "https://example.com:1916"
+    }
   ]
 }
 ```
