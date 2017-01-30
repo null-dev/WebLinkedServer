@@ -36,11 +36,12 @@ server.ip = The IP which the server will bind to. Defaults to: 0.0.0.0
 master.serverListFile = The location of the server list. Defaults to: WLSServers.json in the working directory
 master.listDirectories = Whether or not the master server will list directories (the slaves still will). Defaults to: true
 slave.rootDir = The location of the directory from where the files will be served from. Defaults to the working directory
+slave.useSlowTypeDetection = Whether or not to use slow file type detection (true/false). Will also increase memory usage. Defaults to: false
 ```
 
 ## Server List File ##
 The server list is stored in the file specified by: `master.serverListFile`
-It is in JSON format (in a weird way), here is an example:
+It is in JSON format, here is an example:
 ```
 {
   "servers": [

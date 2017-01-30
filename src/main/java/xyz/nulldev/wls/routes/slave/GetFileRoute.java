@@ -6,6 +6,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import xyz.nulldev.wls.server.SlaveServerImpl;
+import xyz.nulldev.wls.utils.TypeDetector;
 
 import javax.servlet.ServletOutputStream;
 import java.io.BufferedInputStream;
@@ -20,6 +21,7 @@ import java.util.Objects;
  * Author: nulldev
  */
 public class GetFileRoute implements Route {
+    private TypeDetector typeDetector = new TypeDetector();
 
     private Logger logger = LoggerFactory.getLogger(GetFileRoute.class);
 
@@ -83,12 +85,17 @@ public class GetFileRoute implements Route {
         response.status(statusCode);
         response.header("Content-Length", String.valueOf(fileEnd - fileStart + 1));
         response.header("Content-Range", "bytes " + fileStart + "-" + fileEnd + "/" + length);
+
         //Allow download forcing
         if(request.queryParams().contains("force-download")
                 && Objects.equals(request.queryParams("force-download").toUpperCase(), "TRUE")) {
             response.type("application/force-download");
             response.header("Content-Transfer-Encoding", "binary");
             response.header("Content-Disposition","attachment; filename=\"" + resolvedFile.getName() + "\"");
+        } else {
+            String detectedType = typeDetector.detectType(resolvedFile);
+            if(detectedType != null)
+                response.type(detectedType);
         }
         try (BufferedInputStream stream
                      = new BufferedInputStream(new FileInputStream(resolvedFile));
