@@ -18,13 +18,13 @@ import java.util.*;
  * Author: nulldev
  */
 public class FileListReponseGenerator {
-    String dirName;
-    String parentPath;
-    List<ImmutableFile> fileList;
-    SortType sortType;
-    SortDirection sortDirection;
+    private String dirName;
+    private String parentPath;
+    private List<ImmutableFile> fileList;
+    private SortType sortType;
+    private SortDirection sortDirection;
 
-    Logger logger = LoggerFactory.getLogger(FileListReponseGenerator.class);
+    private Logger logger = LoggerFactory.getLogger(FileListReponseGenerator.class);
 
     /**
      * Icons and stuff
@@ -86,7 +86,7 @@ public class FileListReponseGenerator {
     }
 
     public enum SortType {
-        NAME("Name", (o1, o2) -> o1.getName().compareTo(o2.getName())),
+        NAME("Name", Comparator.comparing(ImmutableFile::getName)),
         SIZE("Size", (o1, o2) -> {
             if (o1.getSize() == -1 && o2.getSize() == -1) {
                 return 0;
@@ -184,7 +184,7 @@ public class FileListReponseGenerator {
             StringBuilder body = new StringBuilder();
             List<ImmutableFile> tempList = new ArrayList<>();
             tempList.addAll(fileList);
-            Collections.sort(tempList, sortType.getComparator());
+            tempList.sort(sortType.getComparator());
             if(sortDirection.equals(SortDirection.DESCENDING)) {
                 tempList = Lists.reverse(tempList);
             }

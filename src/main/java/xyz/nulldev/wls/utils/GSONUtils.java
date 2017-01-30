@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
  * Author: nulldev
  */
 public class GSONUtils {
-    static Gson GSON = null;
+    private static Gson GSON = null;
     public static Gson getGson() {
         if(GSON == null) {
             GSON = new GsonBuilder().setPrettyPrinting().create();

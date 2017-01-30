@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.nulldev.wls.WebLinkedServer;
 import xyz.nulldev.wls.models.APIResponse;
+import xyz.nulldev.wls.models.Server;
 import xyz.nulldev.wls.models.ServerList;
 import xyz.nulldev.wls.routes.slave.ListFilesRoute;
 import xyz.nulldev.wls.utils.GSONUtils;
@@ -22,10 +23,10 @@ import java.util.List;
  * Author: nulldev
  */
 public class ServerManager {
-    ServerList loadedServerList;
-    OkHttpClient client = new OkHttpClient();
-    boolean enableDirectoryListing;
-    Logger logger = LoggerFactory.getLogger(ServerManager.class);
+    private ServerList loadedServerList;
+    private OkHttpClient client = new OkHttpClient();
+    private boolean enableDirectoryListing;
+    private Logger logger = LoggerFactory.getLogger(ServerManager.class);
 
     public ServerManager(ServerList loadedServerList) {
         this.loadedServerList = loadedServerList;
@@ -45,9 +46,9 @@ public class ServerManager {
 
     public FileResponse statFile(String path) {
         List<ImmutableFile> listResponse = null;
-        for(String server : loadedServerList.getServers()) {
+        for(Server server : loadedServerList.getServers()) {
             try {
-                Response httpResponse = client.newCall(new Request.Builder().url(server + "/_WLS/LIST_FILES/" + path).build()).execute();
+                Response httpResponse = client.newCall(new Request.Builder().url(server.getInternalUrl() + "/_WLS/LIST_FILES/" + path).build()).execute();
                 APIResponse apiResponse
                         = GSONUtils.getGson().fromJson(httpResponse.body().string(), APIResponse.class);
                 if (apiResponse.getResponseCode() == 0 && enableDirectoryListing) {
@@ -69,7 +70,7 @@ public class ServerManager {
                     }
                 } else if (listResponse == null) {
                     if (apiResponse.getResponseCode() == ListFilesRoute.NOT_DIRECTORY.getResponseCode()) {
-                        String url = server;
+                        String url = server.getExternalUrl();
                         if (!url.endsWith("/")) url += "/";
                         return new FileResponse(url + path);
                     }

@@ -12,9 +12,9 @@ import java.util.Properties;
  * Author: nulldev
  */
 public class Configuration {
-    final File file;
-    final Properties config;
-    Logger logger = LoggerFactory.getLogger(Configuration.class);
+    private final File file;
+    private final Properties config;
+    private Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     /**
      * Initialize a configuration.

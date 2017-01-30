@@ -15,13 +15,13 @@ import java.nio.file.attribute.FileTime;
  * Author: nulldev
  */
 public class ImmutableFile {
-    final String name;
-    final boolean isDirectory;
-    final String relativePath;
-    final long size;
-    final FileTime lastModificationTime;
+    private final String name;
+    private final boolean isDirectory;
+    private final String relativePath;
+    private final long size;
+    private final FileTime lastModificationTime;
 
-    static Logger logger = LoggerFactory.getLogger(ImmutableFile.class);
+    private static Logger logger = LoggerFactory.getLogger(ImmutableFile.class);
 
     public ImmutableFile(FileTime lastModificationTime, long size, String relativePath, boolean isDirectory, String name) {
         this.lastModificationTime = lastModificationTime;

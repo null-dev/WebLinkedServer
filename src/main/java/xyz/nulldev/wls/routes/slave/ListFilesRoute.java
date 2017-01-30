@@ -25,7 +25,7 @@ public class ListFilesRoute implements Route {
     public static final APIResponse SECURITY_EXCEPTION
             = APIResponse.newErrorResponse("Security error!", 3);
 
-    SlaveServerImpl parentServer;
+    private SlaveServerImpl parentServer;
 
     public ListFilesRoute(SlaveServerImpl parentServer) {
         this.parentServer = parentServer;

@@ -1,5 +1,7 @@
 package xyz.nulldev.wls.server;
 
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.nulldev.wls.WebLinkedServer;
@@ -19,17 +21,17 @@ import java.util.ArrayList;
  */
 public class MasterServerImpl implements Server {
 
-    ServerManager serverManager = null;
-    Logger logger = LoggerFactory.getLogger(MasterServerImpl.class);
+    private ServerManager serverManager = null;
+    private Logger logger = LoggerFactory.getLogger(MasterServerImpl.class);
 
     public MasterServerImpl() {
         File serverList = new File(WebLinkedServer.getCONFIGURATION().getConfig()
                 .getProperty("master.serverListFile", "WLSServers.json"));
         ServerList list = null;
         if(serverList.exists()) {
-            try (BufferedReader reader
-                         = new BufferedReader(new InputStreamReader(new FileInputStream(serverList)))) {
-                list = GSONUtils.getGson().fromJson(reader, ServerList.class);
+            try (JsonReader reader
+                         = new JsonReader(new InputStreamReader(new FileInputStream(serverList)))) {
+                list = ServerList.fromJson(new JsonParser().parse(reader));
             } catch (FileNotFoundException e) {
                 logger.error("No server list found, all requests will 404!", e);
             } catch (IOException e) {

@@ -15,7 +15,7 @@ import java.io.File;
  */
 public class SlaveServerImpl implements Server {
 
-    FileManager FILE_MANAGER;
+    private FileManager FILE_MANAGER;
 
     public SlaveServerImpl() {
         File file

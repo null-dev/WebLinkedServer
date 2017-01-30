@@ -9,10 +9,10 @@ import xyz.nulldev.wls.utils.GSONUtils;
  */
 public class APIResponse {
 
-    final Type responseType;
-    final String responseContent;
-    final String errorDesc;
-    final int responseCode;
+    private final Type responseType;
+    private final String responseContent;
+    private final String errorDesc;
+    private final int responseCode;
 
     public static APIResponse newErrorResponse(String errorDesc, int code) {
         return new APIResponse(code, errorDesc, null, Type.ERROR);

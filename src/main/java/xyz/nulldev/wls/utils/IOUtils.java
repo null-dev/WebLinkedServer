@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
  * Author: nulldev
  */
 public class IOUtils {
-    static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    static HashMap<String, String> cachedResource = new HashMap<>();
+    private static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    private static HashMap<String, String> cachedResource = new HashMap<>();
 
     public static String getResourceAsString(String resource) throws IOException {
         if(!resource.startsWith("/")) {

@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class FileRequestRoute implements Route {
 
-    MasterServerImpl parentServer;
-    Logger logger = LoggerFactory.getLogger(FileRequestRoute.class);
+    private MasterServerImpl parentServer;
+    private Logger logger = LoggerFactory.getLogger(FileRequestRoute.class);
 
     public FileRequestRoute(MasterServerImpl parentServer) {
         this.parentServer = parentServer;

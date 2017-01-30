@@ -21,7 +21,7 @@ import java.util.Objects;
  */
 public class GetFileRoute implements Route {
 
-    Logger logger = LoggerFactory.getLogger(GetFileRoute.class);
+    private Logger logger = LoggerFactory.getLogger(GetFileRoute.class);
 
     private SlaveServerImpl parentServer;
 

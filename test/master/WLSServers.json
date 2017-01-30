@@ -1,6 +1,6 @@
 {
   "servers": [
-    "http://localhost:1918",
-    "http://localhost:1917"
+    ["http://localhost:1918", "http://127.0.0.1:1918"],
+    ["http://localhost:1917", "http://127.0.0.1:1917"]
   ]
 }

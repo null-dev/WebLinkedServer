@@ -22,9 +22,9 @@ public class FileManager {
 
     static final Type FILE_LIST = new TypeToken<List<ImmutableFile>>(){}.getType();
 
-    File rootDirectory;
-    Path rootPath;
-    Logger logger = LoggerFactory.getLogger(FileManager.class);
+    private File rootDirectory;
+    private Path rootPath;
+    private Logger logger = LoggerFactory.getLogger(FileManager.class);
 
     public FileManager(File rootDirectory) {
         this.rootDirectory = rootDirectory;
